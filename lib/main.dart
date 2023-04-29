@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:taskut/app/core/values/colors.dart';
 import 'package:taskut/app/modules/home_binding.dart';
@@ -34,50 +35,55 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Taskut',
-      initialBinding: HomeBinding(),
-      getPages: AppPages.pages,
-      initialRoute: AppRoutes.home,
-      builder: (context, child) => Stack(
-        children: [
-          child!,
-          Positioned(
-            bottom: 24,
-            right: 24,
-            child: FloatingActionButton(
-              backgroundColor: CustomColors.primaryColor,
-              onPressed: () {},
-              child: AnimateIcons(
-                startIcon: Icons.add,
-                endIcon: Icons.done,
-                size: 40.0,
+    return ScreenUtilInit(
+      designSize: const Size(428, 926),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Taskut',
+        initialBinding: HomeBinding(),
+        getPages: AppPages.pages,
+        initialRoute: AppRoutes.home,
+        builder: (context, child) => Stack(
+          children: [
+            child!,
+            Positioned(
+              bottom: 24,
+              right: 24,
+              child: FloatingActionButton(
+                backgroundColor: CustomColors.primaryColor,
+                onPressed: () {},
+                child: AnimateIcons(
+                  startIcon: Icons.add,
+                  endIcon: Icons.done,
+                  size: 40.0,
 
-                controller: controller!,
-                // add this tooltip for the start icon
-                // startTooltip: 'Icons.add_circle',
-                // add this tooltip for the end icon
-                // endTooltip: 'Icons.add_circle_outline',
-                onStartIconPress: () {
-                  print("Clicked on Add Icon");
-                  Get.toNamed('/detail');
-                  return true;
-                },
-                onEndIconPress: () {
-                  print("Clicked on Close Icon");
-                  Get.back();
+                  controller: controller!,
+                  // add this tooltip for the start icon
+                  // startTooltip: 'Icons.add_circle',
+                  // add this tooltip for the end icon
+                  // endTooltip: 'Icons.add_circle_outline',
+                  onStartIconPress: () {
+                    print("Clicked on Add Icon");
+                    Get.toNamed('/detail');
+                    return true;
+                  },
+                  onEndIconPress: () {
+                    print("Clicked on Close Icon");
+                    Get.back();
 
-                  return true;
-                },
-                duration: Duration(milliseconds: 500),
-                startIconColor: Colors.white,
-                endIconColor: Colors.white,
-                clockwise: false,
+                    return true;
+                  },
+                  duration: Duration(milliseconds: 500),
+                  startIconColor: Colors.white,
+                  endIconColor: Colors.white,
+                  clockwise: false,
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
