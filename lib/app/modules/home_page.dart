@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:taskut/app/core/values/colors.dart';
+import 'package:taskut/app/modules/home_controller.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+
+  int selectedTimelineIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +19,68 @@ class HomePage extends StatelessWidget {
             _getTopUserInfo(),
             _getSearchField(),
             const _getCategoryTitle(),
-            const _getTaskCategoryList()
+            const _getTaskCategoryList(),
+            const _getTodaysTasksTitle(),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 24),
+                child: SizedBox(
+                  height: 50,
+                  child: Directionality(
+                    textDirection: TextDirection.rtl,
+                    child: GetBuilder<HomeController>(
+                      builder: (controller) => ListView.builder(
+                        itemBuilder: (context, index) => Column(
+                          children: [
+                            Stack(
+                              alignment: AlignmentDirectional.center,
+                              children: [
+                                Container(
+                                  width: 62,
+                                  height: 2,
+                                  decoration: const BoxDecoration(
+                                    color: CustomColors.lightGreen,
+                                  ),
+                                ),
+                                Container(
+                                  width:
+                                      controller.selectedTimelineIndex == index
+                                          ? 10
+                                          : 0,
+                                  height: 10,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: CustomColors.primaryColor,
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            InkResponse(
+                              onTap: () {
+                                controller.timelineChanged(index);
+                              },
+                              child: const Text(
+                                '10 - 12',
+                                style: TextStyle(
+                                  fontFamily: 'SB',
+                                  fontSize: 16,
+                                  color: CustomColors.blackColor,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 10,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -30,7 +95,7 @@ class HomePage extends StatelessWidget {
           height: 46,
           decoration: BoxDecoration(
             color: Colors.white,
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 blurRadius: 20,
                 spreadRadius: -20,
@@ -134,7 +199,7 @@ class HomePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 const Text(
@@ -147,7 +212,7 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               width: 16,
             ),
             Container(
@@ -160,6 +225,84 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _timeBarTest extends StatelessWidget {
+  const _timeBarTest({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Stack(
+          alignment: AlignmentDirectional.centerStart,
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              width: 500,
+              height: 2,
+              decoration: BoxDecoration(
+                color: CustomColors.lightGreen,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(right: 20),
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: CustomColors.primaryColor,
+              ),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _getTodaysTasksTitle extends StatelessWidget {
+  const _getTodaysTasksTitle({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(
+          left: 24,
+          right: 24,
+          bottom: 24,
+          top: 32,
+        ),
+        child: Row(
+          children: const [
+            Text(
+              'مشاهده بیشتر',
+              style: TextStyle(
+                fontFamily: 'SB',
+                fontSize: 12,
+                color: CustomColors.primaryColor,
+              ),
+            ),
+            Spacer(),
+            Text(
+              'تسک های امروز',
+              style: TextStyle(
+                fontFamily: 'SB',
+                fontSize: 16,
+                color: CustomColors.blackColor,
+              ),
+            ),
           ],
         ),
       ),
