@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:taskut/app/core/values/colors.dart';
+import 'package:taskut/app/global_widgets/task_widget.dart';
 import 'package:taskut/app/modules/home_controller.dart';
 
 class HomePage extends StatelessWidget {
@@ -21,62 +22,15 @@ class HomePage extends StatelessWidget {
             const _getCategoryTitle(),
             const _getTaskCategoryList(),
             const _getTodaysTasksTitle(),
+            const _getTimeline(),
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.only(right: 24),
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 child: SizedBox(
-                  height: 50,
-                  child: Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: GetBuilder<HomeController>(
-                      builder: (controller) => ListView.builder(
-                        itemBuilder: (context, index) => Column(
-                          children: [
-                            Stack(
-                              alignment: AlignmentDirectional.center,
-                              children: [
-                                Container(
-                                  width: 62,
-                                  height: 2,
-                                  decoration: const BoxDecoration(
-                                    color: CustomColors.lightGreen,
-                                  ),
-                                ),
-                                Container(
-                                  width:
-                                      controller.selectedTimelineIndex == index
-                                          ? 10
-                                          : 0,
-                                  height: 10,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: CustomColors.primaryColor,
-                                  ),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            InkResponse(
-                              onTap: () {
-                                controller.timelineChanged(index);
-                              },
-                              child: const Text(
-                                '10 - 12',
-                                style: TextStyle(
-                                  fontFamily: 'SB',
-                                  fontSize: 16,
-                                  color: CustomColors.blackColor,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 10,
-                      ),
-                    ),
+                  height: MediaQuery.of(context).size.height,
+                  child: ListView.builder(
+                    itemBuilder: (context, index) => TaskWidget(),
+                    itemCount: 10,
                   ),
                 ),
               ),
@@ -226,6 +180,77 @@ class HomePage extends StatelessWidget {
               ),
             )
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _getTimeline extends StatelessWidget {
+  const _getTimeline({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(right: 24, bottom: 30),
+        child: SizedBox(
+          height: 50,
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: GetBuilder<HomeController>(
+              builder: (controller) => ListView.builder(
+                itemBuilder: (context, index) => Column(
+                  children: [
+                    Stack(
+                      alignment: AlignmentDirectional.center,
+                      children: [
+                        Container(
+                          width: 62,
+                          height: 2,
+                          decoration: const BoxDecoration(
+                            color: CustomColors.lightGreen,
+                          ),
+                        ),
+                        Container(
+                          width: controller.selectedTimelineIndex == index
+                              ? 10
+                              : 0,
+                          height: 10,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: CustomColors.primaryColor,
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    InkResponse(
+                      onTap: () {
+                        controller.timelineChanged(index);
+                      },
+                      child: Text(
+                        '10 - 12',
+                        style: TextStyle(
+                          fontFamily: 'SB',
+                          fontSize: 16,
+                          color: controller.selectedTimelineIndex == index
+                              ? CustomColors.blackColor
+                              : CustomColors.greyColor,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                scrollDirection: Axis.horizontal,
+                itemCount: 10,
+              ),
+            ),
+          ),
         ),
       ),
     );

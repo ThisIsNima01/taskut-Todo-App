@@ -40,6 +40,7 @@ dependencies:
   animate_icons: ^2.0.0
   flutter_svg: ^1.1.6
   flutter_screenutil: ^5.7.0
+  msh_checkbox: ^2.0.1
 
 dev_dependencies:
   flutter_test:
