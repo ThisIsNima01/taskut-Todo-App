@@ -1,43 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:taskut/app/core/values/colors.dart';
 import 'package:taskut/app/global_widgets/task_widget.dart';
-import 'package:taskut/app/modules/home_controller.dart';
+import 'package:taskut/app/global_widgets/timeline.dart';
+import 'package:taskut/app/modules/home/home_controller.dart';
+import 'package:taskut/app/modules/main/main_controller.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   int selectedTimelineIndex = 0;
+  MainController mainController = Get.put(MainController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColors.scaffoldBackgroundColor,
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            _getTopUserInfo(),
-            _getSearchField(),
-            const _getCategoryTitle(),
-            const _getTaskCategoryList(),
-            const _getTodaysTasksTitle(),
-            const _getTimeline(),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) => TaskWidget(),
-                    itemCount: 10,
+        child: NotificationListener<UserScrollNotification>(
+          onNotification: (notif) {
+            // if (taskBox.values.last == 0) return true;
+
+            if (notif.direction == ScrollDirection.forward) {
+              mainController.updateFabVisibility(true);
+              print(mainController.isFabVisible);
+            } else if (notif.direction == ScrollDirection.reverse) {
+              mainController.updateFabVisibility(false);
+              print(mainController.isFabVisible);
+            }
+
+            return true;
+          },
+          child: CustomScrollView(
+            slivers: [
+              _getTopUserInfo(),
+              _getSearchField(),
+              const _getCategoryTitle(),
+              const _getTaskCategoryList(),
+              const _getTodaysTasksTitle(),
+              Timeline(),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: Card(
+                    elevation: 0,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      clipBehavior: Clip.none,
+                      itemBuilder: (context, index) => TaskWidget(),
+                      itemCount: 10,
+                    ),
                   ),
                 ),
               ),
-            ),
-            SliverPadding(padding: EdgeInsets.only(top: 120))
-          ],
+            ],
+          ),
         ),
       ),
     );

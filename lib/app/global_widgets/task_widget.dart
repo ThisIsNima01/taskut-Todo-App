@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
+import 'package:taskut/app/core/values/colors.dart';
 
 class TaskWidget extends StatefulWidget {
   TaskWidget({super.key});
@@ -72,10 +74,10 @@ class _TaskWidgetState extends State<TaskWidget> {
                       size: 32,
                       colorConfig: MSHColorConfig(
                         checkColor: (p0) => Colors.white,
-                        fillColor: (p0) => Color(0xff18DAA3),
+                        fillColor: (p0) => const Color(0xff18DAA3),
                       ),
                       style: MSHCheckboxStyle.fillScaleColor,
-                      value: false,
+                      value: true,
                       // value: isBoxChecked,
                       onChanged: (selected) {
                         setState(() {
@@ -94,29 +96,42 @@ class _TaskWidgetState extends State<TaskWidget> {
                   //       });
                   //     })),
                   // Text(widget.task.title),
-                  Text('آموزش فلاتر')
+                  const Text(
+                    'آموزش فلاتر',
+                    style: TextStyle(
+                      color: CustomColors.blackColor,
+                      fontFamily: 'SB',
+                      fontSize: 14,
+                    ),
+                  )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 4,
               ),
-              Text(
+              const Text(
                 'دوره فلاتر امیراحمد ادیبی',
                 overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  color: CustomColors.blackColor,
+                  fontFamily: 'SM',
+                  fontSize: 12,
+                ),
               ),
               // Text(
               //   widget.task.subTitle,
               //   overflow: TextOverflow.ellipsis,
               // ),
-              Spacer(),
+              const Spacer(),
               _getTimeAndEditBadges(),
             ],
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 20,
         ),
         // Image.asset(widget.task.taskType.image),
+        Image.asset('assets/images/test.png')
       ],
     );
   }
@@ -125,17 +140,17 @@ class _TaskWidgetState extends State<TaskWidget> {
     return Row(
       children: [
         Container(
-          width: 90,
+          width: 84,
           height: 28,
           decoration: BoxDecoration(
-            color: Color(0xff18DAA3),
+            color: const Color(0xff18DAA3),
             borderRadius: BorderRadius.circular(18),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: Row(
               children: [
-                Text(
+                const Text(
                   '10:30',
                   style: TextStyle(
                       color: Colors.white, fontSize: 12, fontFamily: 'SB'),
@@ -148,15 +163,15 @@ class _TaskWidgetState extends State<TaskWidget> {
                 //     fontSize: 14,
                 //   ),
                 // ),
-                SizedBox(
+                const SizedBox(
                   width: 8,
                 ),
-                // Image.asset('assets/images/icon_time.png'),
+                SvgPicture.asset('assets/icons/clock.svg'),
               ],
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 16,
         ),
         InkWell(
@@ -168,10 +183,10 @@ class _TaskWidgetState extends State<TaskWidget> {
             // ));
           },
           child: Container(
-            width: 90,
+            width: 84,
             height: 28,
             decoration: BoxDecoration(
-              color: Color(0xffE2F6F1),
+              color: const Color(0xffE2F6F1),
               borderRadius: BorderRadius.circular(18),
             ),
             child: Padding(
@@ -181,16 +196,21 @@ class _TaskWidgetState extends State<TaskWidget> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'ویرایش',
                     style: TextStyle(
                       color: Color(0xff18DAA3),
+                      fontSize: 12,
+                      fontFamily: 'SB',
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 6,
                   ),
-                  // Image.asset('assets/images/icon_edit.png'),
+                  SizedBox(
+                    width: 16,
+                    child: SvgPicture.asset('assets/icons/edit.svg'),
+                  )
                 ],
               ),
             ),

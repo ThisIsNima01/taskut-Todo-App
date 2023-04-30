@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
-import 'package:taskut/app/modules/home_binding.dart';
-import 'package:taskut/app/modules/home_page.dart';
-import 'package:taskut/app/modules/main_page.dart';
+import 'package:taskut/app/modules/main/main_binding.dart';
+import 'package:taskut/app/modules/main/main_page.dart';
 import 'package:taskut/app/routes/app_routes.dart';
+
+import '../modules/home/home_binding.dart';
+import '../modules/home/home_page.dart';
 
 class AppPages {
   static final List<GetPage> pages = [
@@ -16,7 +18,7 @@ class AppPages {
     GetPage(
       name: AppRoutes.main,
       page: () => MainPage(),
-      binding: HomeBinding(),
+      binding: MainBinding(),
       transition: Transition.fadeIn,
       transitionDuration: Duration(milliseconds: 500),
     ),
