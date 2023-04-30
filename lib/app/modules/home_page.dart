@@ -29,12 +29,14 @@ class HomePage extends StatelessWidget {
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height,
                   child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) => TaskWidget(),
                     itemCount: 10,
                   ),
                 ),
               ),
-            )
+            ),
+            SliverPadding(padding: EdgeInsets.only(top: 120))
           ],
         ),
       ),

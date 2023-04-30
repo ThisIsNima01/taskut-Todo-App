@@ -33,13 +33,13 @@ class _TaskWidgetState extends State<TaskWidget> {
         });
       },
       child: Container(
-        margin: EdgeInsets.only(bottom: 20),
+        margin: const EdgeInsets.only(bottom: 20),
         height: 132,
         width: double.infinity,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 blurRadius: 20,
                 spreadRadius: -18,

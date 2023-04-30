@@ -44,15 +44,16 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         title: 'Taskut',
         initialBinding: HomeBinding(),
         getPages: AppPages.pages,
-        initialRoute: AppRoutes.home,
+        initialRoute: AppRoutes.main,
         builder: (context, child) => Stack(
           children: [
             child!,
             Positioned(
-              bottom: 24,
+              bottom: 64,
               right: 24,
               child: FloatingActionButton(
-                backgroundColor: CustomColors.primaryColor,
+                backgroundColor: CustomColors.primaryColor.withOpacity(0.6),
+                elevation: 0,
                 onPressed: () {},
                 child: AnimateIcons(
                   startIcon: Icons.add,
@@ -66,11 +67,11 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
                   // endTooltip: 'Icons.add_circle_outline',
                   onStartIconPress: () {
                     print("Clicked on Add Icon");
-                    Get.toNamed('/detail');
+                    // Get.toNamed('/detail');
                     return true;
                   },
                   onEndIconPress: () {
-                    print("Clicked on Close Icon");
+                    // print("Clicked on Close Icon");
                     Get.back();
 
                     return true;
