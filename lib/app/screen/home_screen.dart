@@ -1,34 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
-import 'package:taskut/app/core/values/colors.dart';
-import 'package:taskut/app/global_widgets/task_widget.dart';
-import 'package:taskut/app/global_widgets/timeline.dart';
-import 'package:taskut/app/modules/home/home_controller.dart';
-import 'package:taskut/app/modules/main/main_controller.dart';
+import 'package:taskut/app/bloc/task/task_bloc.dart';
+import 'package:taskut/app/config/theme.dart';
+import 'package:taskut/app/data/model/task/task.dart';
+import 'package:taskut/app/core/global_state/fab_visibility_state.dart';
+import 'package:taskut/app/widgets/task_widget.dart';
+import 'package:taskut/app/widgets/timeline.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class HomeScreen extends StatefulWidget {
+  HomeScreen({super.key});
 
-  int selectedTimelineIndex = 0;
-  MainController mainController = Get.put(MainController());
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<TaskBloc>().add(TaskListReceived());
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColors.scaffoldBackgroundColor,
+      backgroundColor: AppColors.scaffoldBackgroundColor,
       body: SafeArea(
         child: NotificationListener<UserScrollNotification>(
-          onNotification: (notif) {
+          onNotification: (notification) {
             // if (taskBox.values.last == 0) return true;
 
-            if (notif.direction == ScrollDirection.forward) {
-              mainController.updateFabVisibility(true);
-              print(mainController.isFabVisible);
-            } else if (notif.direction == ScrollDirection.reverse) {
-              mainController.updateFabVisibility(false);
-              print(mainController.isFabVisible);
+            if (notification.metrics.axis == Axis.horizontal) {
+              return false;
+            }
+
+            if (notification.direction == ScrollDirection.forward) {
+              // FabChanged(true).dispatch(context);
+            } else if (notification.direction == ScrollDirection.reverse) {
+              // FabChanged(false).dispatch(context);
             }
 
             return true;
@@ -41,21 +53,7 @@ class HomePage extends StatelessWidget {
               const _getTaskCategoryList(),
               const _getTodaysTasksTitle(),
               Timeline(),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: Card(
-                    elevation: 0,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      clipBehavior: Clip.none,
-                      itemBuilder: (context, index) => TaskWidget(),
-                      itemCount: 10,
-                    ),
-                  ),
-                ),
-              ),
+              _getTasksList(),
             ],
           ),
         ),
@@ -95,7 +93,7 @@ class HomePage extends StatelessWidget {
                 const Expanded(
                   child: TextField(
                     style: TextStyle(
-                      color: CustomColors.greyColor,
+                      color: AppColors.greyColor,
                       fontFamily: 'SB',
                       fontSize: 12,
                     ),
@@ -104,7 +102,7 @@ class HomePage extends StatelessWidget {
                       border: InputBorder.none,
                       hintText: '... جستجوی تسکات',
                       hintStyle: TextStyle(
-                        color: CustomColors.greyColor,
+                        color: AppColors.greyColor,
                         fontFamily: 'SB',
                         fontSize: 12,
                       ),
@@ -135,7 +133,7 @@ class HomePage extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: CustomColors.lightGreen,
+                color: AppColors.lightGreen,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Padding(
@@ -143,7 +141,7 @@ class HomePage extends StatelessWidget {
                 child: Text(
                   '20 تسک فعال',
                   style: TextStyle(
-                    color: CustomColors.primaryColor,
+                    color: AppColors.primaryColor,
                     fontFamily: 'SB',
                     fontSize: 12,
                   ),
@@ -160,7 +158,7 @@ class HomePage extends StatelessWidget {
                     Text(
                       'نیما',
                       style: TextStyle(
-                        color: CustomColors.primaryColor,
+                        color: AppColors.primaryColor,
                         fontSize: 16,
                         fontFamily: 'SB',
                       ),
@@ -168,7 +166,7 @@ class HomePage extends StatelessWidget {
                     Text(
                       ' ، سلام',
                       style: TextStyle(
-                        color: CustomColors.blackColor,
+                        color: AppColors.blackColor,
                         fontSize: 16,
                         fontFamily: 'SB',
                       ),
@@ -181,7 +179,7 @@ class HomePage extends StatelessWidget {
                 const Text(
                   'شهریور2',
                   style: TextStyle(
-                    color: CustomColors.greyColor,
+                    color: AppColors.greyColor,
                     fontSize: 12,
                     fontFamily: 'SM',
                   ),
@@ -208,8 +206,8 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _getTimeline extends StatelessWidget {
-  const _getTimeline({
+class _getTasksList extends StatelessWidget {
+  _getTasksList({
     Key? key,
   }) : super(key: key);
 
@@ -217,101 +215,28 @@ class _getTimeline extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.only(right: 24, bottom: 30),
-        child: SizedBox(
-          height: 50,
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: GetBuilder<HomeController>(
-              builder: (controller) => ListView.builder(
-                itemBuilder: (context, index) => Column(
-                  children: [
-                    Stack(
-                      alignment: AlignmentDirectional.center,
-                      children: [
-                        Container(
-                          width: 62,
-                          height: 2,
-                          decoration: const BoxDecoration(
-                            color: CustomColors.lightGreen,
-                          ),
-                        ),
-                        Container(
-                          width: controller.selectedTimelineIndex == index
-                              ? 10
-                              : 0,
-                          height: 10,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: CustomColors.primaryColor,
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    InkResponse(
-                      onTap: () {
-                        controller.timelineChanged(index);
-                      },
-                      child: Text(
-                        '10 - 12',
-                        style: TextStyle(
-                          fontFamily: 'SB',
-                          fontSize: 16,
-                          color: controller.selectedTimelineIndex == index
-                              ? CustomColors.blackColor
-                              : CustomColors.greyColor,
-                        ),
-                      ),
-                    )
-                  ],
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        child: BlocBuilder<TaskBloc, TaskState>(
+          builder: (context, state) {
+            if (state is TaskListReceiveSuccess) {
+              return Card(
+                elevation: 0,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  clipBehavior: Clip.none,
+                  itemBuilder: (context, index) {
+                    return TaskWidget();
+                  },
+                  itemCount: state.taskList.length,
                 ),
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-              ),
-            ),
-          ),
+              );
+            }
+
+            return Text('g');
+          },
         ),
       ),
-    );
-  }
-}
-
-class _timeBarTest extends StatelessWidget {
-  const _timeBarTest({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
-          alignment: AlignmentDirectional.centerStart,
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              width: 500,
-              height: 2,
-              decoration: BoxDecoration(
-                color: CustomColors.lightGreen,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(right: 20),
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: CustomColors.primaryColor,
-              ),
-            )
-          ],
-        ),
-      ],
     );
   }
 }
@@ -338,7 +263,7 @@ class _getTodaysTasksTitle extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'SB',
                 fontSize: 12,
-                color: CustomColors.primaryColor,
+                color: AppColors.primaryColor,
               ),
             ),
             Spacer(),
@@ -347,7 +272,7 @@ class _getTodaysTasksTitle extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'SB',
                 fontSize: 16,
-                color: CustomColors.blackColor,
+                color: AppColors.blackColor,
               ),
             ),
           ],
@@ -377,7 +302,7 @@ class _getTaskCategoryList extends StatelessWidget {
                 shape: ContinuousRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
                 ),
-                color: CustomColors.primaryColor,
+                color: AppColors.primaryColor,
               ),
               child: Column(
                 children: [
@@ -399,7 +324,7 @@ class _getTaskCategoryList extends StatelessWidget {
                         child: Text(
                           'ورزش',
                           style: TextStyle(
-                            color: CustomColors.blackColor,
+                            color: AppColors.blackColor,
                             fontFamily: 'SB',
                             fontSize: 12,
                           ),
@@ -436,7 +361,7 @@ class _getCategoryTitle extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'SB',
                 fontSize: 12,
-                color: CustomColors.primaryColor,
+                color: AppColors.primaryColor,
               ),
             ),
             Spacer(),
@@ -445,7 +370,7 @@ class _getCategoryTitle extends StatelessWidget {
               style: TextStyle(
                 fontFamily: 'SB',
                 fontSize: 16,
-                color: CustomColors.blackColor,
+                color: AppColors.blackColor,
               ),
             ),
           ],

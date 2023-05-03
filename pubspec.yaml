@@ -35,13 +35,21 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  get: ^4.6.5
   animated_icon: ^0.0.4
   animate_icons: ^2.0.0
   flutter_svg: ^1.1.6
   flutter_screenutil: ^5.7.0
   msh_checkbox: ^2.0.1
   animated_bottom_navigation_bar: ^1.2.0
+  time_pickerr: ^1.0.6
+  motion_toast: ^2.6.7
+  animated_toggle_switch: ^0.6.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  get_it: ^7.3.0
+  flutter_bloc: ^8.1.2
+  bloc: ^8.1.1
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
@@ -53,6 +61,8 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+  build_runner: ^2.3.3
+  hive_generator: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

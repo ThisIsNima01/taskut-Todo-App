@@ -1,23 +1,30 @@
+import 'package:animate_icons/animate_icons.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:taskut/app/modules/home/home_page.dart';
+import 'package:taskut/app/bloc/task/task_bloc.dart';
+import 'package:taskut/app/screen/add_task_screen.dart';
+import 'package:taskut/app/screen/home_screen.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+import '../config/theme.dart';
+
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainScreenState extends State<MainScreen> {
   int _bottomNavIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         currentIndex: _bottomNavIndex,
@@ -49,7 +56,7 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
       ),
-      body: HomePage(),
+      body: BlocProvider(create: (context) => TaskBloc(), child: HomeScreen()),
     );
   }
 }

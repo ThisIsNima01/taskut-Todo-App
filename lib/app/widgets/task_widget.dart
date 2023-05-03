@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
-import 'package:taskut/app/core/values/colors.dart';
+import 'package:taskut/app/config/theme.dart';
 
 class TaskWidget extends StatefulWidget {
   TaskWidget({super.key});
@@ -99,7 +99,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                   const Text(
                     'آموزش فلاتر',
                     style: TextStyle(
-                      color: CustomColors.blackColor,
+                      color: AppColors.blackColor,
                       fontFamily: 'SB',
                       fontSize: 14,
                     ),
@@ -113,7 +113,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                 'دوره فلاتر امیراحمد ادیبی',
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  color: CustomColors.blackColor,
+                  color: AppColors.blackColor,
                   fontFamily: 'SM',
                   fontSize: 12,
                 ),

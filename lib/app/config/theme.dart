@@ -1,6 +1,6 @@
 import 'package:flutter/animation.dart';
 
-class CustomColors {
+class AppColors {
   static const primaryColor = Color(0xff18DAA3);
   static const lightGreen = Color(0xffE2F6F1);
   static const scaffoldBackgroundColor = Color(0xffFAFAFA);

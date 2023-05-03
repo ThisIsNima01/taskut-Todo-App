@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:taskut/app/core/values/colors.dart';
-import 'package:taskut/app/modules/main/main_binding.dart';
-import 'package:taskut/app/routes/app_pages.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:taskut/app/bloc/task/task_bloc.dart';
+import 'package:taskut/app/config/theme.dart';
+import 'package:taskut/app/data/model/task/task.dart';
+import 'package:taskut/app/data/model/task_type/task_type.dart';
+import 'package:taskut/app/data/model/type_enum/type_enum.dart';
 import 'package:animate_icons/animate_icons.dart';
+import 'package:taskut/app/di/di.dart';
+import 'package:taskut/app/core/global_state/fab_visibility_state.dart';
+import 'package:taskut/app/screen/add_task_screen.dart';
+import 'package:taskut/app/screen/home_screen.dart';
+import 'package:taskut/app/screen/main_screen.dart';
 
-import 'package:taskut/app/routes/app_routes.dart';
-
-import 'app/modules/home/home_binding.dart';
-import 'app/modules/main/main_controller.dart';
-
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(TaskAdapter());
+  Hive.registerAdapter(TaskTypeAdapter());
+  Hive.registerAdapter(TaskTypeEnumAdapter());
+  await Hive.openBox<Task>('taskBox');
+  await getItInit();
+  runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
@@ -25,11 +36,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   AnimationController? _animationController;
   AnimateIconController? controller;
-  MainController mainController = Get.put(MainController());
+  bool visible = true;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 450));
@@ -37,62 +47,53 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext bContext) {
     return ScreenUtilInit(
       designSize: const Size(428, 926),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (context, child) => GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Taskut',
-        initialBinding: MainBinding(),
-        getPages: AppPages.pages,
-        initialRoute: AppRoutes.main,
-        builder: (context, child) => Stack(
-          children: [
-            child!,
-            GetBuilder<MainController>(
-              builder: (mainc) {
-                return AnimatedPositioned(
-                  duration: const Duration(milliseconds: 400),
-                  bottom: mainc.isFabVisible ? 64 : -100,
-                  right: 24,
-                  child: FloatingActionButton(
-                    backgroundColor: CustomColors.primaryColor,
-                    elevation: 0,
-                    onPressed: () {},
-                    child: AnimateIcons(
-                      startIcon: Icons.add,
-                      endIcon: Icons.done,
-                      size: 40.0,
-
-                      controller: controller!,
-                      // add this tooltip for the start icon
-                      // startTooltip: 'Icons.add_circle',
-                      // add this tooltip for the end icon
-                      // endTooltip: 'Icons.add_circle_outline',
-                      onStartIconPress: () {
-                        print("Clicked on Add Icon");
-                        // Get.toNamed('/detail');
-                        return true;
-                      },
-                      onEndIconPress: () {
-                        // print("Clicked on Close Icon");
-                        Get.back();
-
-                        return true;
-                      },
-                      duration: Duration(milliseconds: 500),
-                      startIconColor: Colors.white,
-                      endIconColor: Colors.white,
-                      clockwise: false,
-                    ),
+      builder: (ctx, child) => BlocProvider(
+        create: (context) => TaskBloc(),
+        child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'Taskut',
+            routes: <String, WidgetBuilder>{
+              '/addTask': (BuildContext context) => AddTaskScreen(),
+            },
+            home: Overlay(
+              initialEntries: [
+                OverlayEntry(
+                  builder: (context) => Stack(
+                    children: [
+                      NotificationListener<FabChanged>(
+                        onNotification: (notification) {
+                          setState(() {
+                            visible = notification.visibility;
+                          });
+                          return true;
+                        },
+                        child: MainScreen(),
+                      ),
+                      AnimatedPositioned(
+                        duration: const Duration(milliseconds: 400),
+                        bottom: visible ? 64 : -100,
+                        right: 24,
+                        child: FloatingActionButton(
+                          backgroundColor: AppColors.primaryColor,
+                          elevation: 0,
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AddTaskScreen(),
+                            ));
+                          },
+                          child: Icon(Icons.add),
+                        ),
+                      )
+                    ],
                   ),
-                );
-              },
-            ),
-          ],
-        ),
+                )
+              ],
+            )),
       ),
     );
   }
