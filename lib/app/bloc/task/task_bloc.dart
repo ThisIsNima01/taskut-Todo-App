@@ -21,7 +21,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskAdded>(
       (event, emit) async {
         if (event.subtitle.isEmpty || event.title.isEmpty) {
-          emit(TaskAddingError('عنوان یا توضیحات تسک نباید خالی باشد'));
+          emit(TaskAddError('عنوان یا توضیحات تسک نباید خالی باشد'));
           return;
         }
         await taskRepository.addNewTask(
@@ -29,9 +29,31 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             subtitle: event.subtitle,
             time: event.time,
             taskType: event.taskType);
-        emit(TaskAddingSuccess());
+        emit(TaskAddSuccess());
         final taskList = taskRepository.getTasksList();
         emit(TaskListReceiveSuccess(taskList));
+      },
+    );
+
+    on<TaskDeleted>(
+      (event, emit) {
+        taskRepository.deleteTask(event.task);
+        final taskList = taskRepository.getTasksList();
+        emit(TaskListReceiveSuccess(taskList));
+      },
+    );
+
+    on<TaskSearched>(
+      (event, emit) {
+        final taskList = taskRepository.getTasksList();
+        if (event.wordLength == 0) {
+          emit(TaskListReceiveSuccess(taskList));
+        } else {
+          List<Task> searchedTasks = taskList
+              .where((task) => task.title.contains(event.searchedWord))
+              .toList();
+          emit(TaskSearch(searchedTasks));
+        }
       },
     );
   }

@@ -88,8 +88,5 @@ class _TimelineState extends State<Timeline> {
         '10 - 8:30',
         '12 - 10',
         '13:30 - 12',
-        '13:30 - 12',
-        '13:30 - 12',
-        '13:30 - 12',
       ];
 }

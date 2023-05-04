@@ -90,8 +90,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: SvgPicture.asset('assets/icons/filter.svg'),
                 ),
                 const Spacer(),
-                const Expanded(
+                Expanded(
                   child: TextField(
+                    onChanged: (value) {
+                      context
+                          .read<TaskBloc>()
+                          .add(TaskSearched(value, value.length));
+                    },
                     style: TextStyle(
                       color: AppColors.greyColor,
                       fontFamily: 'SB',
@@ -233,8 +238,39 @@ class _getTasksList extends StatelessWidget {
                 physics: const NeverScrollableScrollPhysics(),
                 clipBehavior: Clip.none,
                 itemBuilder: (context, index) {
-                  return TaskWidget(
-                    task: state.taskList[index],
+                  return Dismissible(
+                    onDismissed: (direction) {
+                      context
+                          .read<TaskBloc>()
+                          .add(TaskDeleted(state.taskList[index]));
+                    },
+                    key: UniqueKey(),
+                    child: TaskWidget(
+                      task: state.taskList[index],
+                    ),
+                  );
+                },
+                itemCount: state.taskList.length,
+              ),
+            );
+          } else if (state is TaskSearch) {
+            return Card(
+              elevation: 0,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                clipBehavior: Clip.none,
+                itemBuilder: (context, index) {
+                  return Dismissible(
+                    onDismissed: (direction) {
+                      context
+                          .read<TaskBloc>()
+                          .add(TaskDeleted(state.taskList[index]));
+                    },
+                    key: UniqueKey(),
+                    child: TaskWidget(
+                      task: state.taskList[index],
+                    ),
                   );
                 },
                 itemCount: state.taskList.length,

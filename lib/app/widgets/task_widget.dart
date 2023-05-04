@@ -150,22 +150,14 @@ class _TaskWidgetState extends State<TaskWidget> {
             borderRadius: BorderRadius.circular(18),
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             child: Row(
               children: [
-                const Text(
-                  '10:30',
+                Text(
+                  '${_getHourUnderTen(widget.task.time)}:${_getMinuteUnderTen(widget.task.time)}',
                   style: TextStyle(
                       color: Colors.white, fontSize: 12, fontFamily: 'SB'),
                 ),
-                // Text(
-                //   '${_getHourUnderTen(widget.task.time)}:${_getMinuteUnderTen(widget.task.time)}',
-                //   style: TextStyle(
-                //     color: Colors.white,
-                //     fontWeight: FontWeight.bold,
-                //     fontSize: 14,
-                //   ),
-                // ),
                 const SizedBox(
                   width: 8,
                 ),

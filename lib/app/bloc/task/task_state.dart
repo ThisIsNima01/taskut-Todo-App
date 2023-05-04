@@ -15,17 +15,27 @@ class TaskListReceiveSuccess extends TaskState {
   List<Object?> get props => [taskList];
 }
 
-class TaskAddingError extends TaskState {
+class TaskAddError extends TaskState {
   String errorMessage;
-  TaskAddingError(this.errorMessage);
+  TaskAddError(this.errorMessage);
 
   @override
-  // TODO: implement props
   List<Object?> get props => [];
 }
 
-class TaskAddingSuccess extends TaskState {
+class TaskAddSuccess extends TaskState {
   @override
-  // TODO: implement props
+  List<Object?> get props => [];
+}
+
+class TaskDeleteSuccess extends TaskState {
+  @override
+  List<Object?> get props => [];
+}
+
+class TaskSearch extends TaskState {
+  List<Task> taskList;
+  TaskSearch(this.taskList);
+  @override
   List<Object?> get props => [];
 }

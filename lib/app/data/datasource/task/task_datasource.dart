@@ -12,6 +12,7 @@ abstract class ITaskDataSource {
       bool isDone = false,
       required DateTime time,
       required TaskType taskType});
+  deleteTask(Task task);
 }
 
 class TaskLocalDataSource extends ITaskDataSource {
@@ -34,5 +35,10 @@ class TaskLocalDataSource extends ITaskDataSource {
     } catch (e) {
       print('Error Occured: ${e}');
     }
+  }
+
+  @override
+  void deleteTask(Task task) {
+    task.delete();
   }
 }

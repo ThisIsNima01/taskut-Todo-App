@@ -12,6 +12,7 @@ abstract class ITaskRepository {
       bool isDone = false,
       required DateTime time,
       required TaskType taskType});
+  deleteTask(Task task);
 }
 
 class TaskRepository extends ITaskRepository {
@@ -29,4 +30,9 @@ class TaskRepository extends ITaskRepository {
 
   @override
   List<Task> getTasksList() => taskDataSource.getAllTasks();
+
+  @override
+  deleteTask(Task task) {
+    taskDataSource.deleteTask(task);
+  }
 }

@@ -183,13 +183,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 BlocListener<TaskBloc, TaskState>(
                   listener: (context, state) {
-                    if (state is TaskAddingError) {
+                    if (state is TaskAddError) {
                       MotionToast.error(
                         description: Text(state.errorMessage),
                         barrierColor: Colors.red.withOpacity(.2),
                       ).show(context);
                     }
-                    if (state is TaskAddingSuccess) {
+                    if (state is TaskAddSuccess) {
                       Navigator.pop(context);
                     }
                   },
