@@ -30,6 +30,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             time: event.time,
             taskType: event.taskType);
         emit(TaskAddingSuccess());
+        final taskList = taskRepository.getTasksList();
+        emit(TaskListReceiveSuccess(taskList));
       },
     );
   }

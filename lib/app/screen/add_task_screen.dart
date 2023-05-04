@@ -190,11 +190,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       ).show(context);
                     }
                     if (state is TaskAddingSuccess) {
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) {
-                          return MyApp();
-                        },
-                      ));
+                      Navigator.pop(context);
                     }
                   },
                   child: ElevatedButton(
@@ -203,13 +199,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       minimumSize: Size(200, 48),
                     ),
                     onPressed: () {
-                      var taskTitle = taskTitleController.text;
-                      var taskSubTitle = taskSubTitleController.text;
-
                       context.read<TaskBloc>().add(
                             TaskAdded(
-                              title: taskTitle,
-                              subtitle: taskSubTitle,
+                              title: taskTitleController.text,
+                              subtitle: taskSubTitleController.text,
                               time: _time!,
                               taskType: TaskType(
                                   image: 'g',
@@ -237,13 +230,4 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       ),
     );
   }
-
-  // addTask(String taskTitle, String taskSubTitle) {
-  //   var task = Task(
-  //       title: taskTitle,
-  //       subTitle: taskSubTitle,
-  //       time: _time!,
-  //       taskType: getTaskTypeList()[_selectTaskTypeItem]);
-  //   taskBox.add(task);
-  // }
 }

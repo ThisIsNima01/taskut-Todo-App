@@ -48,53 +48,45 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext bContext) {
-    return ScreenUtilInit(
-      designSize: const Size(428, 926),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (ctx, child) => BlocProvider(
-        create: (context) => TaskBloc(),
-        child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Taskut',
-            routes: <String, WidgetBuilder>{
-              '/addTask': (BuildContext context) => AddTaskScreen(),
-            },
-            home: Overlay(
-              initialEntries: [
-                OverlayEntry(
-                  builder: (context) => Stack(
-                    children: [
-                      NotificationListener<FabChanged>(
-                        onNotification: (notification) {
-                          setState(() {
-                            visible = notification.visibility;
-                          });
-                          return true;
+    return BlocProvider(
+      create: (context) => TaskBloc(),
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Taskut',
+          home: Overlay(
+            initialEntries: [
+              OverlayEntry(
+                builder: (context) => Stack(
+                  children: [
+                    NotificationListener<FabChanged>(
+                      onNotification: (notification) {
+                        setState(() {
+                          visible = notification.visibility;
+                        });
+                        return true;
+                      },
+                      child: MainScreen(),
+                    ),
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 400),
+                      bottom: visible ? 64 : -100,
+                      right: 24,
+                      child: FloatingActionButton(
+                        backgroundColor: AppColors.primaryColor,
+                        elevation: 0,
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => AddTaskScreen(),
+                          ));
                         },
-                        child: MainScreen(),
+                        child: Icon(Icons.add),
                       ),
-                      AnimatedPositioned(
-                        duration: const Duration(milliseconds: 400),
-                        bottom: visible ? 64 : -100,
-                        right: 24,
-                        child: FloatingActionButton(
-                          backgroundColor: AppColors.primaryColor,
-                          elevation: 0,
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AddTaskScreen(),
-                            ));
-                          },
-                          child: Icon(Icons.add),
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            )),
-      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          )),
     );
   }
 }

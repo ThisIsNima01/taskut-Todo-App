@@ -27,7 +27,7 @@ class _TimelineState extends State<Timeline> {
                     alignment: AlignmentDirectional.center,
                     children: [
                       Container(
-                        width: 80,
+                        width: 82,
                         height: 2,
                         decoration: const BoxDecoration(
                           color: AppColors.lightGreen,
@@ -67,7 +67,9 @@ class _TimelineState extends State<Timeline> {
                             ? AppColors.blackColor
                             : AppColors.greyColor,
                       ),
-                      child: Text(getTimelineTitles()[index]),
+                      child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          child: Text(getTimelineTitles()[index])),
                     ),
                   )
                 ],

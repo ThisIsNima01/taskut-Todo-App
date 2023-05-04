@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:msh_checkbox/msh_checkbox.dart';
 import 'package:taskut/app/config/theme.dart';
+import 'package:taskut/app/data/model/task/task.dart';
 
 class TaskWidget extends StatefulWidget {
-  TaskWidget({super.key});
+  TaskWidget({super.key, required this.task});
+
+  Task task;
 
   @override
   State<TaskWidget> createState() => _TaskWidgetState();
@@ -96,8 +99,8 @@ class _TaskWidgetState extends State<TaskWidget> {
                   //       });
                   //     })),
                   // Text(widget.task.title),
-                  const Text(
-                    'آموزش فلاتر',
+                  Text(
+                    widget.task.title,
                     style: TextStyle(
                       color: AppColors.blackColor,
                       fontFamily: 'SB',
@@ -109,8 +112,8 @@ class _TaskWidgetState extends State<TaskWidget> {
               const SizedBox(
                 height: 4,
               ),
-              const Text(
-                'دوره فلاتر امیراحمد ادیبی',
+              Text(
+                widget.task.subTitle,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   color: AppColors.blackColor,

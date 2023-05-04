@@ -56,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ],
       ),
-      body: BlocProvider(create: (context) => TaskBloc(), child: HomeScreen()),
+      body: HomeScreen(),
     );
   }
 }

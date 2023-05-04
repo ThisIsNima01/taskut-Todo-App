@@ -19,9 +19,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     context.read<TaskBloc>().add(TaskListReceived());
+
+    super.initState();
   }
 
   @override
@@ -38,9 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             if (notification.direction == ScrollDirection.forward) {
-              // FabChanged(true).dispatch(context);
+              FabChanged(true).dispatch(context);
             } else if (notification.direction == ScrollDirection.reverse) {
-              // FabChanged(false).dispatch(context);
+              FabChanged(false).dispatch(context);
             }
 
             return true;
@@ -214,30 +214,37 @@ class _getTasksList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: BlocBuilder<TaskBloc, TaskState>(
-          builder: (context, state) {
-            if (state is TaskListReceiveSuccess) {
-              return Card(
-                elevation: 0,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  clipBehavior: Clip.none,
-                  itemBuilder: (context, index) {
-                    return TaskWidget();
-                  },
-                  itemCount: state.taskList.length,
-                ),
-              );
-            }
-
-            return Text('g');
-          },
-        ),
+        child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: BlocBuilder<TaskBloc, TaskState>(
+        buildWhen: (previous, current) {
+          if (previous is TaskListReceiveSuccess &&
+              current is TaskListReceiveSuccess) {
+            return previous.taskList.length != current.taskList.length;
+          }
+          return true;
+        },
+        builder: (context, state) {
+          if (state is TaskListReceiveSuccess) {
+            return Card(
+              elevation: 0,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                clipBehavior: Clip.none,
+                itemBuilder: (context, index) {
+                  return TaskWidget(
+                    task: state.taskList[index],
+                  );
+                },
+                itemCount: state.taskList.length,
+              ),
+            );
+          }
+          return Text('error');
+        },
       ),
-    );
+    ));
   }
 }
 
