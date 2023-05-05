@@ -12,6 +12,7 @@ part 'task_state.dart';
 
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final ITaskRepository taskRepository = locator.get();
+  bool isUserSearching = false;
   TaskBloc() : super(TaskInitial()) {
     on<TaskListReceived>((event, emit) {
       final taskList = taskRepository.getTasksList();
@@ -29,29 +30,41 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             subtitle: event.subtitle,
             time: event.time,
             taskType: event.taskType);
-        emit(TaskAddSuccess());
         final taskList = taskRepository.getTasksList();
-        emit(TaskListReceiveSuccess(taskList));
+        emit(TaskAddSuccess());
+        if (!isUserSearching) emit(TaskListReceiveSuccess(taskList));
       },
     );
 
     on<TaskDeleted>(
       (event, emit) {
+        isUserSearching = event.isUserSearching;
+
         taskRepository.deleteTask(event.task);
         final taskList = taskRepository.getTasksList();
-        emit(TaskListReceiveSuccess(taskList));
+
+        emit(TaskLengthUpdated(taskList.length));
+
+        if (!isUserSearching) {
+          emit(TaskListReceiveSuccess(taskList));
+        }
       },
     );
 
     on<TaskSearched>(
       (event, emit) {
+        isUserSearching = event.wordLength != 0;
         final taskList = taskRepository.getTasksList();
-        if (event.wordLength == 0) {
+        if (!isUserSearching) {
           emit(TaskListReceiveSuccess(taskList));
         } else {
           List<Task> searchedTasks = taskList
-              .where((task) => task.title.contains(event.searchedWord))
+              .where((task) => task.title
+                  .toLowerCase()
+                  .contains(event.searchedWord.toLowerCase()))
               .toList();
+          emit(TaskLengthUpdated(taskList.length));
+
           emit(TaskSearch(searchedTasks));
         }
       },

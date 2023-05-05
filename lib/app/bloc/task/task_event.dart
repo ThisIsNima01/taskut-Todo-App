@@ -19,7 +19,8 @@ class TaskAdded extends TaskEvent {
 
 class TaskDeleted extends TaskEvent {
   Task task;
-  TaskDeleted(this.task);
+  bool isUserSearching;
+  TaskDeleted(this.task, this.isUserSearching);
 }
 
 class TaskSearched extends TaskEvent {

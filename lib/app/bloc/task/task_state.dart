@@ -28,14 +28,16 @@ class TaskAddSuccess extends TaskState {
   List<Object?> get props => [];
 }
 
-class TaskDeleteSuccess extends TaskState {
+class TaskLengthUpdated extends TaskState {
+  int taskListLength;
+  TaskLengthUpdated(this.taskListLength);
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [taskListLength];
 }
 
 class TaskSearch extends TaskState {
   List<Task> taskList;
   TaskSearch(this.taskList);
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [taskList];
 }

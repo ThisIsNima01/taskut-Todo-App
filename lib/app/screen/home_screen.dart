@@ -17,6 +17,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TextEditingController searchController = TextEditingController(text: '');
+  bool isUserSearching = false;
+  int? taskLength = 0;
+
   @override
   void initState() {
     context.read<TaskBloc>().add(TaskListReceived());
@@ -38,9 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
             }
 
             if (notification.direction == ScrollDirection.forward) {
-              FabChanged(true).dispatch(context);
+              // FabChanged(true).dispatch(context);
             } else if (notification.direction == ScrollDirection.reverse) {
-              FabChanged(false).dispatch(context);
+              // FabChanged(false).dispatch(context);
             }
 
             return true;
@@ -53,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const _getTaskCategoryList(),
               const _getTodaysTasksTitle(),
               Timeline(),
-              _getTasksList(),
+              _getTaskList(isUserSearching),
             ],
           ),
         ),
@@ -92,7 +96,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 const Spacer(),
                 Expanded(
                   child: TextField(
+                    controller: searchController,
                     onChanged: (value) {
+                      if (value.length == 0) {
+                        setState(() {
+                          isUserSearching = false;
+                        });
+                      } else {
+                        setState(() {
+                          isUserSearching = true;
+                        });
+                      }
                       context
                           .read<TaskBloc>()
                           .add(TaskSearched(value, value.length));
@@ -141,15 +155,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: AppColors.lightGreen,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: const Padding(
+              child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                child: Text(
-                  '20 تسک فعال',
-                  style: TextStyle(
-                    color: AppColors.primaryColor,
-                    fontFamily: 'SB',
-                    fontSize: 12,
-                  ),
+                child: BlocBuilder<TaskBloc, TaskState>(
+                  buildWhen: (previous, current) {
+                    if (current is TaskListReceiveSuccess) {
+                      taskLength = current.taskList.length;
+                      return true;
+                    }
+
+                    if (current is TaskLengthUpdated) {
+                      taskLength = current.taskListLength;
+                      return true;
+                    }
+                    return false;
+                  },
+                  builder: (context, state) {
+                    return Text(
+                      'تسک فعال ${taskLength}',
+                      style: TextStyle(
+                        color: AppColors.primaryColor,
+                        fontFamily: 'SB',
+                        fontSize: 12,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
@@ -211,24 +241,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _getTasksList extends StatelessWidget {
-  _getTasksList({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
+Widget _getTaskList(isUserSearching) => SliverToBoxAdapter(
         child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: BlocBuilder<TaskBloc, TaskState>(
-        buildWhen: (previous, current) {
-          if (previous is TaskListReceiveSuccess &&
-              current is TaskListReceiveSuccess) {
-            return previous.taskList.length != current.taskList.length;
-          }
-          return true;
-        },
+        buildWhen: (previous, current) =>
+            (current is TaskListReceiveSuccess || current is TaskSearch),
         builder: (context, state) {
           if (state is TaskListReceiveSuccess) {
             return Card(
@@ -240,9 +258,8 @@ class _getTasksList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Dismissible(
                     onDismissed: (direction) {
-                      context
-                          .read<TaskBloc>()
-                          .add(TaskDeleted(state.taskList[index]));
+                      context.read<TaskBloc>().add(
+                          TaskDeleted(state.taskList[index], isUserSearching));
                     },
                     key: UniqueKey(),
                     child: TaskWidget(
@@ -255,6 +272,7 @@ class _getTasksList extends StatelessWidget {
             );
           } else if (state is TaskSearch) {
             return Card(
+              key: const Key('f'),
               elevation: 0,
               child: ListView.builder(
                 shrinkWrap: true,
@@ -263,9 +281,8 @@ class _getTasksList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Dismissible(
                     onDismissed: (direction) {
-                      context
-                          .read<TaskBloc>()
-                          .add(TaskDeleted(state.taskList[index]));
+                      context.read<TaskBloc>().add(
+                          TaskDeleted(state.taskList[index], isUserSearching));
                     },
                     key: UniqueKey(),
                     child: TaskWidget(
@@ -281,8 +298,6 @@ class _getTasksList extends StatelessWidget {
         },
       ),
     ));
-  }
-}
 
 class _getTodaysTasksTitle extends StatelessWidget {
   const _getTodaysTasksTitle({
