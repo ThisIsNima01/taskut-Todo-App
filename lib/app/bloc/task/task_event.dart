@@ -28,3 +28,9 @@ class TaskSearched extends TaskEvent {
   int wordLength;
   TaskSearched(this.searchedWord, this.wordLength);
 }
+
+class TaskTimelineFilterChanged extends TaskEvent {
+  int fromHour;
+  int toHour;
+  TaskTimelineFilterChanged(this.fromHour, this.toHour);
+}

@@ -245,8 +245,9 @@ Widget _getTaskList(isUserSearching) => SliverToBoxAdapter(
         child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: BlocBuilder<TaskBloc, TaskState>(
-        buildWhen: (previous, current) =>
-            (current is TaskListReceiveSuccess || current is TaskSearch),
+        buildWhen: (previous, current) => (current is TaskListReceiveSuccess ||
+            current is TaskSearch ||
+            current is TaskTimelineFilter),
         builder: (context, state) {
           if (state is TaskListReceiveSuccess) {
             return Card(
@@ -271,6 +272,29 @@ Widget _getTaskList(isUserSearching) => SliverToBoxAdapter(
               ),
             );
           } else if (state is TaskSearch) {
+            return Card(
+              key: const Key('f'),
+              elevation: 0,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                clipBehavior: Clip.none,
+                itemBuilder: (context, index) {
+                  return Dismissible(
+                    onDismissed: (direction) {
+                      context.read<TaskBloc>().add(
+                          TaskDeleted(state.taskList[index], isUserSearching));
+                    },
+                    key: UniqueKey(),
+                    child: TaskWidget(
+                      task: state.taskList[index],
+                    ),
+                  );
+                },
+                itemCount: state.taskList.length,
+              ),
+            );
+          } else if (state is TaskTimelineFilter) {
             return Card(
               key: const Key('f'),
               elevation: 0,

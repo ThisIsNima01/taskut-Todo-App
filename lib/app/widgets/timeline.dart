@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:taskut/app/bloc/task/task_bloc.dart';
+import 'package:taskut/app/core/utils/timeline_times.dart';
 
 import '../config/theme.dart';
 
@@ -57,6 +60,15 @@ class _TimelineState extends State<Timeline> {
                       setState(() {
                         _selectedTimelineIndex = index;
                       });
+                      if (index == 0) {
+                        context
+                            .read<TaskBloc>()
+                            .add(TaskTimelineFilterChanged(0, 0));
+                      } else {
+                        context.read<TaskBloc>().add(TaskTimelineFilterChanged(
+                            Utils.getTimelineTimes()[index][0],
+                            Utils.getTimelineTimes()[index][1]));
+                      }
                     },
                     child: AnimatedDefaultTextStyle(
                       duration: const Duration(milliseconds: 700),
@@ -68,25 +80,21 @@ class _TimelineState extends State<Timeline> {
                             : AppColors.greyColor,
                       ),
                       child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 6),
-                          child: Text(getTimelineTitles()[index])),
+                        padding: EdgeInsets.symmetric(horizontal: 6),
+                        child: Text(index == 0
+                            ? Utils.getTimelineTimes()[index]
+                            : '${Utils.getTimelineTimes()[index][1]} - ${Utils.getTimelineTimes()[index][0]}'),
+                      ),
                     ),
                   )
                 ],
               ),
               scrollDirection: Axis.horizontal,
-              itemCount: getTimelineTitles().length,
+              itemCount: Utils.getTimelineTimes().length,
             ),
           ),
         ),
       ),
     );
   }
-
-  List<String> getTimelineTitles() => [
-        'همه',
-        '10 - 8:30',
-        '12 - 10',
-        '13:30 - 12',
-      ];
 }

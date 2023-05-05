@@ -41,3 +41,10 @@ class TaskSearch extends TaskState {
   @override
   List<Object?> get props => [taskList];
 }
+
+class TaskTimelineFilter extends TaskState {
+  List<Task> taskList;
+  TaskTimelineFilter(this.taskList);
+  @override
+  List<Object?> get props => [taskList];
+}
